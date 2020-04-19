@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
 
@@ -59,6 +61,8 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         panelBottom.add(btnDisconnect, BorderLayout.WEST);
         panelBottom.add(tfMessage, BorderLayout.CENTER);
         panelBottom.add(btnSend, BorderLayout.EAST);
+        btnSend.addActionListener(this);
+        tfMessage.addActionListener(this);
 
         add(scrUser, BorderLayout.EAST);
         add(scrLog, BorderLayout.CENTER);
@@ -72,6 +76,9 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         Object src = e.getSource();
         if (src == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
+        }else if(src == btnSend | src == tfMessage) {
+            log.append(tfMessage.getText() + "\n\n" );
+            logSave(tfMessage.getText());
         } else {
             throw new RuntimeException("Unknown source:" + src);
         }
@@ -86,5 +93,13 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
                 t.getName(), e.getClass().getCanonicalName(), e.getMessage(), ste[0]);
         JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
+    }
+
+    private void logSave(String log) {
+        try (FileWriter logFile = new FileWriter("logFile.txt", true)) {
+            logFile.write(log + "\n");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Ошибка при записи истории сообщений", "Exception", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
