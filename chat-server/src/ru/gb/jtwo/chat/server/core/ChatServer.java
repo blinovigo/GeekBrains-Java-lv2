@@ -7,6 +7,7 @@ import ru.gb.jtwo.network.SocketThreadListener;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Vector;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
 
